@@ -23,8 +23,8 @@ namespace GameOfLife
         public Life(int lifeSize, bool generateRandomLife = false)
         {
             _boardHeight = _boardWidth = lifeSize;
-            _nextBoard = new bool[_boardWidth, _boardHeight];
-            _lifeBoard = new bool[_boardWidth, _boardHeight];
+            _nextBoard = new bool[_boardHeight, _boardWidth];
+            _lifeBoard = new bool[_boardHeight, _boardWidth];
             if (generateRandomLife)
                 InitRandommLife();
         }
