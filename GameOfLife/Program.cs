@@ -19,12 +19,15 @@ namespace GameOfLife
         private readonly bool[,] _nextBoard;
         private readonly int _boardWidth;
         private readonly int _boardHeight;
+        public int Generations { get; set; }
+        public int Size { get; private set; }
 
         public Life(int lifeSize, bool generateRandomLife = false)
         {
             _boardHeight = _boardWidth = lifeSize;
             _nextBoard = new bool[_boardHeight, _boardWidth];
             _lifeBoard = new bool[_boardHeight, _boardWidth];
+            Size = lifeSize;
             if (generateRandomLife)
                 InitRandommLife();
         }
@@ -104,7 +107,6 @@ namespace GameOfLife
         /// В случае зацикливания возвращается false.</returns>
         public bool NextGeneration()
         {
-
             for (int row = 0; row < _boardHeight; row++)
             {
                 for (int column = 0; column < _boardWidth; column++)
@@ -139,6 +141,7 @@ namespace GameOfLife
                     break;
             }
             Array.Copy(_nextBoard, _lifeBoard, _boardHeight * _boardWidth);
+            Generations++;
             return haveNewGeneration;
         }
 
@@ -165,7 +168,7 @@ namespace GameOfLife
 
     class Program
     {
-        private const int StepDelay = 250;
+        private const int StepDelay = 50;
         private const ConsoleColor DeadColor = ConsoleColor.Black;
         private const ConsoleColor LiveColor = ConsoleColor.Cyan;
         private const int GameSize = 45;
@@ -174,17 +177,25 @@ namespace GameOfLife
         {
             InitConsole(GameSize, GameSize);
             Life life = new Life(GameSize, generateRandomLife: true);
+//            life[0, 1] = true;
+//            life[1, 2] = true;
+//            life[2, 0] = life[2, 1] = life[2, 2] = true;
             do
             {
                 Console.SetCursorPosition(0, 0);
                 Console.Write(life.GetBoard());
                 Thread.Sleep(StepDelay);
+                Console.Title = $"Game of Life: {life.Size}x{life.Size}; Number of generations: {life.Generations}\n";
             } while (life.NextGeneration());
+
+            
+            Console.ReadKey();
         }
 
         private static void InitConsole(int width, int height)
         {
             Console.Clear();
+            Console.Title = "Game of Life " + width +"x" + height;
             Console.CursorVisible = false;
             Console.BackgroundColor = DeadColor;
             Console.ForegroundColor = LiveColor;
